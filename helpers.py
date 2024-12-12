@@ -51,7 +51,7 @@ def plot_average_class_representation(dataset, class_dict, label):
         plot_time_series_class(data, class_names[i], ax)
 
     fig.delaxes(axs.flat[-1])
-    fig.tight_layout();
+    fig.tight_layout()
     
     
 class Metrics:
@@ -62,11 +62,12 @@ class Metrics:
         self.precision = []
         self.recall =[]
         self.f1 = []
+        self.auroc = []
         self.test_pred = []
         self.test_seq = []
         self.names = []
         
-    def add_components(self, model_name, X_test_pred, y_test_pred, accuracy, precision, reacall, f1):
+    def add_components(self, model_name, X_test_pred, y_test_pred, accuracy, precision, reacall, f1, auroc):
         # add metric components to the appropriate lists
         self.names.append(model_name)
         self.test_pred.append(y_test_pred)
@@ -75,10 +76,11 @@ class Metrics:
         self.precision.append(precision)
         self.recall.append(reacall)
         self.f1.append(f1)
+        self.auroc.append(auroc)
 
     def get_metrics(self):
         # return all metric lists
-        return self.precision, self.recall, self.f1, self.accuracy
+        return self.precision, self.recall, self.f1, self.accuracy, self.auroc
     
     def get_names(self):
         # return list of model names
@@ -109,14 +111,17 @@ def make_predictions(model, X_train, X_val, X_test):
     
     # make prediction (reconstruction) training set
     X_train_pred = model.predict(X_train)
+    X_train_pred_proba = model.predict_proba(X_train)
 
     # make prediction (reconstruction) validation set
     X_val_pred = model.predict(X_val)
+    X_val_pred_proba = model.predict_proba(X_val)
 
     # make prediction (reconstruction) test set
     X_test_pred = model.predict(X_test)
+    X_test_pred_proba = model.predict_proba(X_test)
     
-    return X_train_pred, X_val_pred, X_test_pred 
+    return X_train_pred, X_val_pred, X_test_pred, X_train_pred_proba, X_val_pred_proba, X_test_pred_proba 
 
 
 def calculate_reconstrucion_losses(X_train, X_train_pred, X_val, X_val_pred, X_test, X_test_pred):
@@ -134,7 +139,7 @@ def calculate_reconstrucion_losses(X_train, X_train_pred, X_val, X_val_pred, X_t
     return train_loss, val_loss, test_loss
 
 
-def calculate_prediction_metrics(y_test, y_test_pred, verbose=1):
+def calculate_prediction_metrics(y_test, y_test_pred, y_test_pred_proba, verbose=1):
     ''' caclucale and print prediction metrics'''
     
     # calculate test set accuracy prediction
@@ -142,14 +147,16 @@ def calculate_prediction_metrics(y_test, y_test_pred, verbose=1):
     test_precision = metrics.precision_score(y_test_pred, y_test)
     test_recall = metrics.recall_score(y_test_pred, y_test)
     test_f1_score = metrics.f1_score(y_test_pred, y_test)
+    test_auroc = metrics.roc_auc_score(y_test, y_test_pred_proba)
 
     if verbose==1:
-        print(f'Test accuracy score: {round(test_accuracy, 4)}')
         print(f'Test precision score: {round(test_precision, 4)}')
         print(f'Test recall score: {round(test_recall, 4)}')
         print(f'Test f1 score: {round(test_f1_score, 4)}')
+        print(f'Test accuracy score: {round(test_accuracy, 4)}')
+        print(f'Test auroc score: {round(test_auroc, 4)}')
     
-    return test_accuracy, test_precision, test_recall, test_f1_score
+    return test_accuracy, test_precision, test_recall, test_f1_score, test_auroc
 
 
 def select_threshold(train_loss, y_val, val_loss, percentiles):
@@ -204,7 +211,7 @@ def plot_recontructions(model, X_1, X_2, threshold, title_1, title_2, nrows=2, n
     for i in range(ncols):
         plot_prediction(X_2[i:i+1], model, title=title_2, ax=axs[1, i])
 
-    fig.tight_layout();
+    fig.tight_layout()
     
     
 def plot_single_reconstruction(X_true, X_predicted, title, ax):
@@ -240,7 +247,7 @@ def compare_reconstructions(X_test, y_test, model_names, sequences, predictions,
         for col in range(ncols):
             plot_single_reconstruction(X_true[col:col+1], X_pred[col:col+1], title=model_names[row], ax=axs[row, col])    
 
-    fig.tight_layout();
+    fig.tight_layout()
 
 
 def plot_results(results):
@@ -250,7 +257,7 @@ def plot_results(results):
     plt.axvline(x=0.96, color='k', alpha=1, ls='--')
     plt.axvline(x=0.97, color='k', alpha=1, ls='--')
     plt.axvline(x=0.98, color='k', alpha=1, ls='--')
-    plt.legend(loc='upper right')
+    plt.legend(loc='lower right')
     plt.title('Comparission of all results')
     plt.tight_layout()
     plt.show()
