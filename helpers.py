@@ -111,17 +111,14 @@ def make_predictions(model, X_train, X_val, X_test):
     
     # make prediction (reconstruction) training set
     X_train_pred = model.predict(X_train)
-    X_train_pred_proba = model.predict_proba(X_train)
 
     # make prediction (reconstruction) validation set
     X_val_pred = model.predict(X_val)
-    X_val_pred_proba = model.predict_proba(X_val)
 
     # make prediction (reconstruction) test set
     X_test_pred = model.predict(X_test)
-    X_test_pred_proba = model.predict_proba(X_test)
     
-    return X_train_pred, X_val_pred, X_test_pred, X_train_pred_proba, X_val_pred_proba, X_test_pred_proba 
+    return X_train_pred, X_val_pred, X_test_pred 
 
 
 def calculate_reconstrucion_losses(X_train, X_train_pred, X_val, X_val_pred, X_test, X_test_pred):
@@ -139,7 +136,7 @@ def calculate_reconstrucion_losses(X_train, X_train_pred, X_val, X_val_pred, X_t
     return train_loss, val_loss, test_loss
 
 
-def calculate_prediction_metrics(y_test, y_test_pred, y_test_pred_proba, verbose=1):
+def calculate_prediction_metrics(y_test, y_test_pred, verbose=1):
     ''' caclucale and print prediction metrics'''
     
     # calculate test set accuracy prediction
@@ -147,7 +144,7 @@ def calculate_prediction_metrics(y_test, y_test_pred, y_test_pred_proba, verbose
     test_precision = metrics.precision_score(y_test_pred, y_test)
     test_recall = metrics.recall_score(y_test_pred, y_test)
     test_f1_score = metrics.f1_score(y_test_pred, y_test)
-    test_auroc = metrics.roc_auc_score(y_test, y_test_pred_proba)
+    test_auroc = metrics.roc_auc_score(y_test, y_test_pred)
 
     if verbose==1:
         print(f'Test precision score: {round(test_precision, 4)}')
