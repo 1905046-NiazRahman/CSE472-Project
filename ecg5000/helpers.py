@@ -248,13 +248,14 @@ def compare_reconstructions(X_test, y_test, model_names, sequences, predictions,
 
 
 def plot_results(results):
-    results.plot.barh(figsize=(13,5), xlim=(0.93, 0.99))
+    results.plot.barh(figsize=(13,5), xlim=(0.93, 1.0))
     plt.axvline(x=0.94, color='k', alpha=1, ls='--')
     plt.axvline(x=0.95, color='k', alpha=1, ls='--')
     plt.axvline(x=0.96, color='k', alpha=1, ls='--')
     plt.axvline(x=0.97, color='k', alpha=1, ls='--')
     plt.axvline(x=0.98, color='k', alpha=1, ls='--')
-    plt.legend(loc='lower right')
+    plt.axvline(x=0.99, color='k', alpha=1, ls='--')
+    plt.legend(loc='upper right')
     plt.title('Comparission of all results')
     plt.tight_layout()
     plt.show()
