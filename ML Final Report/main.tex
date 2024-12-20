@@ -269,13 +269,13 @@ $$
 \end{enumerate}
 
 \subsection{SHAP Analysis}
-In this analysis, we employed SHAP (SHapley Additive exPlanations) to interpret the predictions made by our machine learning models on the ECG5000 dataset. This dataset consists of 5,000 electrocardiogram (ECG) recordings, which are crucial for diagnosing various cardiac conditions.
+In this analysis, we employed SHAP (SHapley Additive exPlanations) to interpret the predictions made by our machine learning models on the ECG5000 dataset.
 \subsubsection{\textbf{Purpose of SHAP Analysis}}
 The primary objective of using SHAP was to gain insights into the contributions of individual features to the model's predictions. By understanding which features are most influential, we can enhance model transparency, improve interpretability, and identify potential areas for further investigation in the context of ECG analysis.
 \subsubsection{\textbf{
 Methodology}}
 \begin{enumerate} 
-    \item \textbf{Model Training}: We trained a suitable machine learning model (e.g., Random Forest, Gradient Boosting) on the ECG5000 dataset.
+    \item \textbf{Model Training}: We trained a suitable machine learning model (e.g.Gradient Explainer) on the ECG5000 dataset.
     \item \textbf{SHAP Value Calculation}: We utilized the SHAP library to compute SHAP values for each feature in the dataset. These values indicate how much each feature contributes to the difference between the model's prediction and the average prediction across all samples.
     \item \textbf{Visualization}: We created visualizations such as summary plots and dependence plots to illustrate the impact of features on model predictions.
 \end{enumerate}
@@ -291,7 +291,8 @@ Methodology}}
 \subsubsection{\textbf{Challenges}}
 Due to gpu memory insufficiency, we cannot do SHAP analysis on big dataset and large models. Besides, we have some time constraints, so small dataset is used for SHAP analysis.Dataset used for SHAP consists of 500 normal data and500 abnormal data.This samll dataset is used to fit the model as well as SHAP analysis.
 
-
+\subsection{Implementation}
+Codes are available \href{https://github.com/1905046-NiazRahman/CSE472-Project}{\textcolor{blue}{here}}.
 
 
 \subsection{Training and Test Set Details}
